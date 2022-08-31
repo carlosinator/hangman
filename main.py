@@ -9,9 +9,9 @@ from pathlib import Path
 
 df = create_ds.get_wordlist(min_word_length=1)
 
-true_word = "an"
-max_tries = 100
-verbose=0
+true_word = "maw"
+max_tries = 11
+verbose=1
 
 tries = hf.test_run_one_game(hs.ComputerPlayer, df=df, true_word=true_word, max_tries=max_tries, wait_seconds=0, verbose=verbose)
 

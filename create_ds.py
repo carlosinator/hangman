@@ -5,7 +5,7 @@ def get_wordlist(path=None, min_word_length=1, remove_all_caps=False):
 
     # import csv (or text file)
     if path == None:
-        df = pd.read_csv("default_wordlist.txt")
+        df = pd.read_csv("./data/default_wordlist.txt")
     else:
         df = pd.read_csv(path)
     

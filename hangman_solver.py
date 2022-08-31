@@ -55,10 +55,25 @@ def compute_worst_choice(word_list):
     best_index = entropy_arr.argmin()
     return ALPHABET[best_index], entropy_arr[best_index]
 
+"""
+TODO
+Instead of computing the best Information Theory choice, one could
+choose the letter that appears most often. Maybe this heuristic is
+very good without the previous mess.
+
+word_list: List of possible words
+returns: NOT IMPLEMENTED YET
+"""
 def compute_choice_binary(word_list):
     return "Not implemented yet"
 
+"""
+TODO
+Evaluation of relative probabilities and the corresponding best choice
+word_list: List of possible words
 
+returns: NOT IMPLEMENTED YET
+"""
 def useless_probability_evaluation(word_list):
     return 0
 
@@ -67,25 +82,48 @@ def useless_probability_evaluation(word_list):
 class ComputerPlayer:
     """
     Init of computer player
+    word_list: Complete list of all words that are considered for this game of hangman
+
+    self.only_one_len: Indicator for whether the word_list has been reduced to one size
+    Expensive computation->use indicator so that it is only done once
+    self.word_list: Contains the remaining possible words at each step
+    self.compute_letter: function that the computer player uses to evaluate which letter
+    to choose
     """
-    def __init__(self, word_list, word_length):
-        self.word_list = hf.reduce_only_word_size(df=word_list, fixed_size=word_length)
+    def __init__(self, word_list):
+        self.only_one_len = False
+        self.word_list = word_list
         # self.num_tries = num_tries
         self.compute_letter = compute_optimal_choice
         # self.probable_words = useless_probability_evaluation
-        self.known_values = np.repeat(".", word_length)
         return
 
     """
     Update of list using known information
+
+    known_list: List of known information at each position
+
+    returns: reduced version of self.word_list to only include the
+    remaining possible words
     """
     def update_list(self, known_list):
+        if not self.only_one_len:
+            self.word_list = hf.reduce_only_word_size(df=self.word_list, fixed_size=len(known_list))
+            self.only_one_len = True
         known_string = hf.knowledge2string(known_list)
         self.word_list = hf.reduce_with_query(df=self.word_list, query_string=known_string)
         return self.word_list
 
     """
     Executes full move. Depending on word list length (0, 1, or more) an evaluation is returned
+    known_list: List of known information
+
+    1. List of possible words is reduced
+    2. If only one word remains->return that
+        if no words remain: return error
+    3. Otherwise compute the best letter with its information content
+
+    Returns: either word, error guess or best letter
     """
     def execute_move(self, known_list):
 
@@ -99,6 +137,3 @@ class ComputerPlayer:
         letter, entropy = self.compute_letter(self.word_list)
 
         return letter, entropy
-
-
-
