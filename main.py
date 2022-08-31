@@ -9,7 +9,7 @@ from pathlib import Path
 
 df = data_functions.get_wordlist(min_word_length=1)
 
-true_word = "starry"
+true_word = "siv"
 if not data_functions.in_database(df, true_word):
     raise ValueError("Word not in Database")
 
@@ -22,7 +22,3 @@ if wrong_tries == None:
     print(true_word.upper() + " was not guessed. " + str(total_tries) + " total guesses :(")
 else:
     print("Guessed " + true_word.upper() + " after " + str(wrong_tries) + " wrong and " + str(total_tries) + " total guesses :)")
-
-
-
-

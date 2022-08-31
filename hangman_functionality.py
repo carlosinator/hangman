@@ -185,3 +185,29 @@ def compute_tries_all_words(df, player, max_tries):
     # filepath.parent.mkdir(parents=True, exist_ok=True)
     # df_with_tries.to_csv(filepath)
     return df_with_tries
+
+"""
+TODO
+Computes the needed tries for all functions recursively
+METHODOLOGY:
+1. If only one df in dataframe: 
+    1. wrong_tries += 0, total_tries += 0 if full knowledge
+    2. wrong_tries += 0, total_tries += 1 if not full knowledge
+2. If df empty: return empty df
+3. If several dfs:
+    1. Compute next letter
+    2. Partition the df into M dfs for each knowledge possibility that is not empty.
+        a. if all are empty: all tries (???) of all input dfs get None
+    3. Call recursive function for all dfs
+    4. All dfs get total_tries += 1, the df without matches gets wrong_tries += 1
+    5. return recompiled df
+
+
+df: dataframe with "Word", "WrongTries" and "TotalTries" columns
+player: Player object that makes the 
+knowlege: What is known at this point. Array or object
+
+Returns: Dataframe with updated needed tries for that point
+"""
+def recursive_all_tries_computation(df, player, knowledge):
+    return
