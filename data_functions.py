@@ -29,3 +29,7 @@ def get_wordlist(path=None, min_word_length=1, remove_all_caps=False):
     df["Word"] = df["Word"].str.lower()
     df = df.drop_duplicates()
     return df
+
+
+def in_database(df, word):
+    return not df[df["Word"] == word].empty
