@@ -123,21 +123,25 @@ def print_verbose(text, verbose):
         print(text)
         return
 
-def test_run_one_game(player, df, true_word, max_tries, wait_seconds, verbose=1):
+def test_run_one_game(player, df, true_word, max_wrong_tries, wait_seconds, verbose=1):
     GAME_RUNNING = True
     true_word = true_word.lower()
-    tries = 0
-    print_verbose("Total tries: " + str(tries), verbose)
+    wrong_tries = 0
+    total_tries = 0
+    print_verbose("Total tries: " + str(max_wrong_tries), verbose)
+    print_verbose("Word length: " + str(len(true_word)), verbose)
     print_verbose("-"*50, verbose)
     wrong_guess = []
     known_information = ["."] * len(true_word)
     computer = player(df)
     while(True):
-        if max_tries != None and tries == max_tries:
+        total_tries += 1
+        print_verbose("Turn " + str(total_tries), verbose)
+        if max_wrong_tries != None and wrong_tries == max_wrong_tries:
             print_verbose("Out of tries! Computer loses.", verbose)
             print_verbose("Remaining words: ", verbose)
             print_verbose(computer.word_list, verbose)
-            return None
+            return None, total_tries
         
 
         guess, entropy_guess = computer.execute_move(known_list=known_information)
@@ -149,19 +153,19 @@ def test_run_one_game(player, df, true_word, max_tries, wait_seconds, verbose=1)
             print_verbose("Game Over", verbose)
             return None
         elif done:
-            print("Computer found " + true_word.upper() + " after " + str(tries) + " wrong guesses!")
-            return tries
+            print("Computer found " + true_word.upper() + " after " + str(wrong_tries) + " wrong guesses!")
+            return wrong_tries, total_tries
         else:
             if matched_any:
                 print_verbose(guess.upper() + " is in word :)", verbose)
             if not matched_any:
                 print_verbose(guess.upper() + " is not in word :(", verbose)
                 wrong_guess.append(guess)
-                tries += 1
+                wrong_tries += 1
             print_verbose("==> INFORMATION: " + knowledge_visualization(known_list=known_information) + ", wrong guesses: " + str(wrong_guess), verbose)
             
-            if max_tries != None:
-                print_verbose("Remaining tries: " + str(max_tries - tries), verbose)
+            if max_wrong_tries != None:
+                print_verbose("Remaining wrong attempts: " + str(max_wrong_tries - wrong_tries), verbose)
             print_verbose("-"*50, verbose)
 
         time.sleep(wait_seconds)
@@ -175,7 +179,7 @@ max_tries: Limitation on the number of tries the player can take
 """
 def compute_tries_all_words(df, player, max_tries):
     df_with_tries = df
-    df_with_tries["Tries"] = df_with_tries.apply(lambda x : test_run_one_game(player, df=df, true_word=x["Word"], max_tries=max_tries, wait_seconds=0, verbose=0), axis=1)
+    df_with_tries["Tries"] = df_with_tries.apply(lambda x : test_run_one_game(player, df=df, true_word=x["Word"], max_wrong_tries=max_tries, wait_seconds=0, verbose=0), axis=1)
 
     # filepath = Path('./wordswithtries.csv')
     # filepath.parent.mkdir(parents=True, exist_ok=True)
