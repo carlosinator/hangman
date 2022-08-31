@@ -126,14 +126,14 @@ def print_verbose(text, verbose):
 def test_run_one_game(player, df, true_word, max_tries, wait_seconds, verbose=1):
     GAME_RUNNING = True
     true_word = true_word.lower()
-    tries = max_tries
+    tries = 0
     print_verbose("Total tries: " + str(tries), verbose)
     print_verbose("-"*50, verbose)
     wrong_guess = []
     known_information = ["."] * len(true_word)
     computer = player(df)
     while(True):
-        if tries == 0:
+        if max_tries != None and tries == max_tries:
             print_verbose("Out of tries! Computer loses.", verbose)
             print_verbose("Remaining words: ", verbose)
             print_verbose(computer.word_list, verbose)
@@ -141,7 +141,7 @@ def test_run_one_game(player, df, true_word, max_tries, wait_seconds, verbose=1)
         
 
         guess, entropy_guess = computer.execute_move(known_list=known_information)
-        print_verbose("Computer guesses: " + guess + ", ENTROPY: " + str(entropy_guess) + ", WORDS REMAINING: " + str(computer.word_list.shape[0]), verbose)
+        print_verbose("Computer guesses: " + guess.upper() + ", ENTROPY: " + str(entropy_guess) + ", WORDS REMAINING: " + str(computer.word_list.shape[0]), verbose)
 
         known_information, done, matched_any = process_guess(known_information, guess, true_word)
         if done == None:
@@ -149,17 +149,35 @@ def test_run_one_game(player, df, true_word, max_tries, wait_seconds, verbose=1)
             print_verbose("Game Over", verbose)
             return None
         elif done:
-            print("Computer found " + true_word.upper() + " after " + str(max_tries - tries) + " guesses!")
-            return max_tries - tries
+            print("Computer found " + true_word.upper() + " after " + str(tries) + " wrong guesses!")
+            return tries
         else:
             if matched_any:
                 print_verbose(guess.upper() + " is in word :)", verbose)
             if not matched_any:
                 print_verbose(guess.upper() + " is not in word :(", verbose)
                 wrong_guess.append(guess)
-                tries -= 1
+                tries += 1
             print_verbose("==> INFORMATION: " + knowledge_visualization(known_list=known_information) + ", wrong guesses: " + str(wrong_guess), verbose)
-            print_verbose("Remaining tries: " + str(tries), verbose)
+            
+            if max_tries != None:
+                print_verbose("Remaining tries: " + str(max_tries - tries), verbose)
             print_verbose("-"*50, verbose)
 
         time.sleep(wait_seconds)
+
+"""
+Inefficient function that takes O(26*N^2) to compute the necessary
+tries for all words
+df: Words to be considered
+player: Player Object that executes all decisions
+max_tries: Limitation on the number of tries the player can take
+"""
+def compute_tries_all_words(df, player, max_tries):
+    df_with_tries = df
+    df_with_tries["Tries"] = df_with_tries.apply(lambda x : test_run_one_game(player, df=df, true_word=x["Word"], max_tries=max_tries, wait_seconds=0, verbose=0), axis=1)
+
+    # filepath = Path('./wordswithtries.csv')
+    # filepath.parent.mkdir(parents=True, exist_ok=True)
+    # df_with_tries.to_csv(filepath)
+    return df_with_tries
