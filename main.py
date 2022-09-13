@@ -1,24 +1,34 @@
 import pandas as pd
 import numpy as np
-import data_functions
-import hangman_functionality as hf
-import hangman_solver as hs
-import information_theory as it
+import functionality.data_functions as data_functions
+import functionality.information_theory as it
 import time
-from pathlib import Path  
+from functionality import game
+from players import computer_player
+from strategies import it_equal_prob
+
+
+true_word = "hi"
+max_wrong_tries = 11
+verbose = 1
+wait_seconds = 0
+
 
 df = data_functions.get_wordlist(min_word_length=1)
-
-true_word = "siv"
 if not data_functions.in_database(df, true_word):
     raise ValueError("Word not in Database")
 
-max_tries = 11
-verbose=0
 
-wrong_tries, total_tries = hf.test_run_one_game(hs.ComputerPlayer, df=df, true_word=true_word, max_wrong_tries=max_tries, wait_seconds=0, verbose=verbose)
+plyr = computer_player.ComputerPlayer(df, it_equal_prob.compute_optimal_choice)
+game = game.Game(player=plyr, word=true_word)
 
-if wrong_tries == None:
-    print(true_word.upper() + " was not guessed. " + str(total_tries) + " total guesses :(")
+start = time.process_time()
+guessed, wrong_tries, total_tries = game.play(max_wrong_tries=max_wrong_tries, wait_seconds=wait_seconds, verbose=verbose)
+diff = time.process_time() - start
+
+if guessed == False:
+    print(true_word.upper() + " was not guessed. " + str(wrong_tries) + " wrong and " + str(total_tries) + " total guesses :(")
 else:
     print("Guessed " + true_word.upper() + " after " + str(wrong_tries) + " wrong and " + str(total_tries) + " total guesses :)")
+
+print("Elapsed time:", diff)
