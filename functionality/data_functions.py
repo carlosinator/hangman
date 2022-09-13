@@ -1,13 +1,9 @@
 import pandas as pd
 import numpy as np
 
-def get_wordlist(path=None, min_word_length=1, remove_all_caps=False):
+def get_wordlist(path, min_word_length=1, remove_all_caps=False):
 
-    # import csv (or text file)
-    if path == None:
-        df = pd.read_csv("../data/default_wordlist.txt")
-    else:
-        df = pd.read_csv(path)
+    df = pd.read_csv(path)
     
     # keep only one column and name it "Word"
     old_col_name = df.columns[0]
@@ -29,6 +25,12 @@ def get_wordlist(path=None, min_word_length=1, remove_all_caps=False):
     df["Word"] = df["Word"].str.lower()
     df = df.drop_duplicates()
     return df
+
+
+def reduce_with_query(df, query_string):
+    if df.empty:
+        return df
+    return df[df["Word"].str.fullmatch(query_string)]
 
 
 def in_database(df, word):

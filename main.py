@@ -8,13 +8,13 @@ from players import computer_player
 from strategies import it_equal_prob
 
 
-true_word = "hi"
+true_word = "hello"
 max_wrong_tries = 11
-verbose = 1
+verbose = 0
 wait_seconds = 0
 
 
-df = data_functions.get_wordlist(min_word_length=1)
+df = data_functions.get_wordlist(path='./data/default_wordlist.csv', min_word_length=1)
 if not data_functions.in_database(df, true_word):
     raise ValueError("Word not in Database")
 
