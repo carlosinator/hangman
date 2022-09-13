@@ -88,7 +88,7 @@ class Knowledge:
             if elem == "." or len(elem) != 1:
                 tmp += '_'
             elif len(elem) == 1:
-                tmp += elem
+                tmp += elem.upper()
             else:
                 tmp += "?"
         return tmp

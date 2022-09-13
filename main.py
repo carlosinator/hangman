@@ -7,11 +7,11 @@ from functionality import game
 from players import computer_player
 from strategies import it_equal_prob
 
-
+# SETUP OF GAME
 true_word = "hello"
 max_wrong_tries = 11
-verbose = 0
-wait_seconds = 0
+verbose = 1
+wait_seconds = 1
 
 
 df = data_functions.get_wordlist(path='./data/default_wordlist.csv', min_word_length=1)
