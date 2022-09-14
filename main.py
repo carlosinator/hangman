@@ -9,7 +9,7 @@ from strategies import it_equal_prob
 from strategies import relative_freq
 
 # SETUP OF GAME
-true_word = "hi"
+true_word = "hello"
 max_wrong_tries = 11
 verbose = 0
 wait_seconds = 1
