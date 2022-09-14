@@ -34,7 +34,7 @@ class ComputerPlayer:
         self.word_list = data_functions.reduce_with_query(df=self.word_list, query_string=knowledge.tostring())
 
         if self.word_list.shape[0] == 1:
-            return self.word_list.iloc[0]["Word"], 0
+            return self.word_list.iloc[0]["word"], 0
         if self.word_list.shape[0] == 0:
             return "WORD NOT FOUND", np.inf
 

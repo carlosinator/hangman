@@ -6,20 +6,21 @@ import time
 from functionality import game
 from players import computer_player
 from strategies import it_equal_prob
+from strategies import relative_freq
 
 # SETUP OF GAME
-true_word = "hello"
+true_word = "hi"
 max_wrong_tries = 11
-verbose = 1
+verbose = 0
 wait_seconds = 1
 
 
-df = data_functions.get_wordlist(path='./data/default_wordlist.csv', min_word_length=1)
+df = data_functions.get_wordlist(path='./data/word_frequency.csv', min_word_length=1)
 if not data_functions.in_database(df, true_word):
     raise ValueError("Word not in Database")
 
 
-plyr = computer_player.ComputerPlayer(df, it_equal_prob.compute_optimal_choice)
+plyr = computer_player.ComputerPlayer(df, relative_freq.compute_optimal_choice)
 game = game.Game(player=plyr, word=true_word)
 
 start = time.process_time()

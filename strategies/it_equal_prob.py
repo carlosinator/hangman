@@ -16,7 +16,7 @@ def combination_count(word_list, letter):
     Returns:
        DataFrame : Each index is the number of occurrences of one possible combination of the indices of the letter in the word list
     """
-    x = word_list["Word"].apply(lambda x : [_.start() for _ in re.finditer(letter, x)])
+    x = word_list["word"].apply(lambda x : [_.start() for _ in re.finditer(letter, x)])
     return x.value_counts()
 
 
