@@ -33,7 +33,7 @@ The player object is passed a function that returns the best guess for a word_li
 
 ```it_equal_prob``` considers all words equally likely.
 
-````relative_freq``` considers word frequencies to make guesses. For this to work ```word_frequncy.csv``` should be used, otherwise the strategy is equivalent to ```it_equal_prob``` 
+```relative_freq``` considers word frequencies to make guesses. For this to work ```word_frequncy.csv``` should be used, otherwise the strategy is equivalent to ```it_equal_prob``` 
 
 # feedback and more
 
