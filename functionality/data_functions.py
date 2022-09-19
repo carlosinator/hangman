@@ -51,3 +51,6 @@ def clean_words(df, remove_acronyms=True, min_word_length=1):
         df = df[df["word"].str.isupper() == False]
 
     return df
+
+def compute_max_len(df):
+    return max(df['word'].apply(len))

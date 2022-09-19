@@ -15,11 +15,11 @@ def combination_distribution(word_list, letter):
     Returns:
         pd.DataFrame: Each combination has a tuple of the index (letter "e" for elephant -> (0,2)) and how many times this appears
     """
-    x = word_list.copy()
-    x['combination'] = x["word"].apply(lambda x : tuple([_.start() for _ in re.finditer(letter, x)]))
-    x = x[["count", "combination"]]
-    x = x.groupby('combination')['count'].sum()
-    return x
+    tmp_df = word_list.copy()
+    tmp_df['combination'] = tmp_df["word"].apply(lambda x : tuple([_.start() for _ in re.finditer(letter, x)]))
+    tmp_df = tmp_df[["count", "combination"]]
+    tmp_df = tmp_df.groupby('combination')['count'].sum()
+    return tmp_df
 
 
 def entropy_of_choice(word_list, letter):
@@ -35,7 +35,7 @@ def entropy_of_choice(word_list, letter):
     return it.entropy(combinations)
 
 
-def compute_optimal_choice(word_list):
+def compute_optimal_choice(word_list, lookup=None):
     """
     For a word list of possible choices the letter, entropy pair with the
     highest entropy is returned
@@ -44,6 +44,13 @@ def compute_optimal_choice(word_list):
 
     Returns: char of best entropy and corresponding entropy
     """
+
+    if lookup != None:
+        return lookup.get(len(word_list.iloc[0]['word']))
+
+
     entropy_arr = np.array([entropy_of_choice(word_list, letter) for letter in ALPHABET])
     best_index = entropy_arr.argmax()
     return ALPHABET[best_index], entropy_arr[best_index]
+
+

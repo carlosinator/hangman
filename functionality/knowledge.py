@@ -2,7 +2,20 @@ import numpy as np
 
 
 class Knowledge:
+    """
+    Knowledge Object that quantifies the knwon information on the hangman board.
+    This can then be for example represented as a Regex to query a pandas.DataFrame
+    """
     def __init__(self, word_length):
+        """
+        Initialization of object.
+        known_positions: Places in the word that are known
+        knowledge_array: string for each position representing a regex: (for example ^a -> not a)
+        letters_not_in_word: letters known not to be in the word
+
+        Args:
+            word_length (int): length of word to be found. Necessary to initialize the attributes of the object
+        """
         self.known_positions = np.array([False] * word_length, dtype=bool)
         self.knowledge_array = np.array([""] * word_length, dtype=object)
         self.letters_not_in_word = []
@@ -44,8 +57,6 @@ class Knowledge:
         inv_mask = np.ones(self.knowledge_array.size, dtype=bool)
         inv_mask[letter_occurrence] = False
 
-        # Check information (INCORRECT!)
-        # assert np.all(np.logical_and(np.logical_not(self.known_positions), true_mask)) == True, "A little errore"
         check_arr = np.logical_not(np.logical_and(self.known_positions, true_mask))
         assert np.all(check_arr), "Contradictory knowledge. At least one position is already fixed."
 
@@ -55,19 +66,33 @@ class Knowledge:
 
         tmp = np.logical_and(inv_mask, np.logical_not(self.known_positions))
         self.knowledge_array[tmp] = self.knowledge_array[tmp] + "^" + letter
-        # self.knowledge_array[inv_mask] = self.knowledge_array[inv_mask] + "^" + letter
 
         self.known_positions[true_mask] = True
         return
 
     def completed(self):
+        """
+        Check that the knowledge is completed. One can be certain of the word that has been found.
+        Returns:
+            bool: Indicator of whether the knowledge is completed.
+        """
         return np.all(self.known_positions == True)
+
+    def check_empty(self):
+        """
+        Check that nothing is known
+        Returns:
+            bool: Indicator of whether the knowledge is empty
+        """
+        return np.all(np.logical_not(self.known_positions)) and self.letters_not_in_word == []
 
     
     def tostring(self):
         """
-        TODO
         Creates a string from knowledge that can be used as a regex to query a database
+
+        Returns:
+            string: Query string for regex
         """
         
         if ''.join(self.knowledge_array) == '':
@@ -81,7 +106,7 @@ class Knowledge:
         Creates a string for display in the commandline
 
         Returns:
-            string : String easy to understand for displaying
+            string: String easy to understand for displaying
         """
         tmp = ''
         for elem in self.knowledge_array:
@@ -92,26 +117,3 @@ class Knowledge:
             else:
                 tmp += "?"
         return tmp
-
-
-    
-    @staticmethod
-    def _check_information_correct(information):
-        """
-        TODO
-        Check that passed information does not contain contradictions like [['c', '^c']]
-        """
-        return
-
-
-    """
-    TODO (??? still unclear)
-    Condense new information, remove redundancies e.g. 
-    1. Condense known position: 
-        a. In new knowledge ['a', '^c'] -> ['a']
-        b. If ['a'] is known, position in new knowledge is set to []
-    2. Delete repeats: ['c', 'c'] -> ['c']
-    """
-    def _condense_new_information(new_information):
-        return
-

@@ -6,9 +6,12 @@ from functionality import knowledge
 
 
 class Game:
-    def __init__(self, player, word):
-        self._word = word.lower()
-        self.knowledge = knowledge.Knowledge(len(word))
+    """
+    Class that runs a simple game of hangman.
+    """
+    def __init__(self, player):
+        self._word = None
+        self.knowledge = None
         self.player = player
 
         self.verbose = 0
@@ -48,7 +51,10 @@ class Game:
             print(text)
             return
     
-    def play(self, max_wrong_tries, wait_seconds=0, verbose=0):
+    def play(self, word, max_wrong_tries, wait_seconds=0, verbose=0):
+        
+        self._setup_game(word)
+
         self.verbose = verbose
         wrong_tries = 0
         total_tries = 0
@@ -95,36 +101,11 @@ class Game:
 
             time.sleep(wait_seconds)
 
-
-
-
-"""    def update_information(known_information, indices, letter):
-        not_letter = "^" + letter
-        for pos in range(0, len(known_information)):
-            if known_information[pos] == ".":
-                known_information[pos] = ""
-            
-            if pos in indices:
-                known_information[pos] = letter
-            else:
-                if len(known_information[pos]) != 1:
-                    known_information[pos] = known_information[pos] + not_letter
-        return known_information"""
-
-
-"""
-Inefficient function that takes O(26*N^2) to compute the necessary
-tries for all words
-df: Words to be considered
-player: Player Object that executes all decisions
-max_tries: Limitation on the number of tries the player can take
-
-def compute_tries_all_words(df, player, max_tries):
-    df_with_tries = df
-    df_with_tries["Tries"] = df_with_tries.apply(lambda x : hf.test_run_one_game(player, df=df, true_word=x["Word"], max_wrong_tries=max_tries, wait_seconds=0, verbose=0), axis=1)
-
-    # filepath = Path('./wordswithtries.csv')
-    # filepath.parent.mkdir(parents=True, exist_ok=True)
-    # df_with_tries.to_csv(filepath)
-    return df_with_tries
-"""
+    def _setup_game(self, word):
+        """
+        Set the word and knowledge within the object. Reset the player.
+        """
+        self._word = word.lower()
+        self.knowledge = knowledge.Knowledge(len(word))
+        self.player.reset()
+        return
