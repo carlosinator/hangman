@@ -31,8 +31,8 @@ def all_eval(df, strategy_func):
         df.update(rec_one_len_eval(wl, knowledge.Knowledge(word_length=word_length), strategy_func=strategy_func))
     return df
 
+
 def rec_one_len_eval(word_list, kl, strategy_func, depth=0):
-    # print("on depth", depth, "with shape", word_list.shape)
     """
     Evaluates the necessary number of tries for all words of one length
 
@@ -63,7 +63,7 @@ def rec_one_len_eval(word_list, kl, strategy_func, depth=0):
     else:
         word_list['total_tries'] += 1
         letter,_ = strategy_func(word_list)
-        # QUESTION: When to update knowledge: Beginning or end of turn? beginning
+
         splits = split_on_letter(word_list, letter)
         for x in splits.groups:
             subset = splits.get_group(x)

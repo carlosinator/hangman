@@ -29,7 +29,7 @@ plyr = computer_player.ComputerPlayer(df, relative_freq.compute_optimal_choice, 
 gme = game.Game(player=plyr)
 
 elapsed = []
-ITER = 100
+ITER = 1000
 for _ in range(0,ITER):
     if RANDOM_WORD:
         index = int(np.random.random(1) * df.shape[0])
